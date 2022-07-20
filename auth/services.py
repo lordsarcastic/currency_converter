@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import logging
 from typing import Any, Dict, Optional
 
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from pydantic import ValidationError
 
@@ -13,6 +14,10 @@ from .schema import AuthSchema, LoginSchema, SignupSchema, TokenSchema, UserSche
 from . import exceptions
 
 
+reuseable_oauth = OAuth2PasswordBearer(
+    tokenUrl="/api/v1/user/login",
+    scheme_name="JWT"
+)
 
 def hash_password(password: str) -> str:
     hashed_password = settings.PASSWORD_HASHER.hash(password)
@@ -99,6 +104,6 @@ class UserService(BaseService):
         
         
         if user_from_db is None:
-            raise exceptions.UserDoesNotExist
+            raise exceptions.UnvalidatedCredentials
         
         return user_from_db

@@ -1,12 +1,14 @@
+from typing import Optional
 from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from auth.exceptions import UserDoesNotExist
 
 from db.db import get_db
 
 from .models import User
 from .schema import LoginSchema, SignupSchema, TokenSchema, UserSchema
-from .services import UserService
+from .services import UserService, reuseable_oauth
 
 
 router = APIRouter(
@@ -14,10 +16,10 @@ router = APIRouter(
 )
 
 
-reuseable_oauth = OAuth2PasswordBearer(
-    tokenUrl="/api/v1/user/login",
-    scheme_name="JWT"
-)
+def get_user(db: Session = Depends(get_db), token: str = Depends(reuseable_oauth)) -> User:
+    user = UserService(db).get_current_user(token)
+    
+    return user
 
 @router.post('/signup', summary="Create a new user", response_model=UserSchema)
 def signup(user: SignupSchema, db: Session = Depends(get_db)):
