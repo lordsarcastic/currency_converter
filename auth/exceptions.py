@@ -1,21 +1,18 @@
-from fastapi import (
-    HTTPException,
-    status
-)
+from fastapi import HTTPException, status
 
 
 UserExist = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
-    detail="User with this email already exists"
+    detail="User with this email already exists",
 )
 
 InvalidCredentials = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Email or password is incorrect. Incorrect login credentials"
+    detail="Email or password is incorrect. Incorrect login credentials",
 )
 
 TokenExpired = HTTPException(
-    status_code = status.HTTP_401_UNAUTHORIZED,
+    status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Token expired",
     headers={"WWW-Authenticate": "Bearer"},
 )

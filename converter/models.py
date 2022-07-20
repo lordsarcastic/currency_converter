@@ -4,13 +4,7 @@ from uuid import uuid4
 
 from sqlalchemy.dialects.postgresql import UUID
 
-from sqlalchemy import (
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    String
-)
+from sqlalchemy import Column, DateTime, Float, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from db.base import Base
@@ -23,11 +17,9 @@ class ConversionHistory(Base):
     rate = Column(Float, nullable=False)
     result = Column(Float, nullable=False)
     user_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey('user.id', ondelete='CASCADE'),
-        nullable=False
+        UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
-    user = relationship('User')
+    user = relationship("User")
     timestamp = Column(DateTime(timezone=True), default=datetime.utcnow())
 
     @classmethod
@@ -36,5 +28,5 @@ class ConversionHistory(Base):
 
         for column in instance.__table__.columns:
             result[column.name] = str(getattr(instance, column.name))
-        
+
         return result

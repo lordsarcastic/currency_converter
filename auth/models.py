@@ -1,11 +1,7 @@
 from datetime import datetime
 from typing import Type
 
-from sqlalchemy import (
-    Column,
-    DateTime,
-    String
-)
+from sqlalchemy import Column, DateTime, String
 
 from db.base import Base
 
@@ -23,5 +19,5 @@ class User(Base):
 
         for column in instance.__table__.columns:
             result[column.name] = str(getattr(instance, column.name))
-        
+
         return result

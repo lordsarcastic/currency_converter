@@ -7,14 +7,14 @@ from db.schema import BaseSchema
 
 
 class HistorySchema(BaseSchema):
-    from_currency : str
-    to_currency : str
-    user_id : int
+    from_currency: str
+    to_currency: str
+    user_id: int
 
 
 class GetHistorySchema(BaseSchema):
-    from_currency : Optional[str]
-    to_currency : Optional[str]
+    from_currency: Optional[str]
+    to_currency: Optional[str]
 
 
 class CurrencySchema(BaseSchema):
@@ -27,18 +27,18 @@ class CurrencyListSchema(BaseSchema):
 
 
 class ConvertSchema(BaseSchema):
-    from_currency : str
-    to_currency : str
-    amount : float = Field(gt=0, description="The amount must be greater than zero")
+    from_currency: str
+    to_currency: str
+    amount: float = Field(gt=0, description="The amount must be greater than zero")
+
 
 class ConversionResponseSchema(BaseSchema):
-    from_currency : str
-    to_currency : str
-    amount : float
-    rate : float
-    result : float
+    from_currency: str
+    to_currency: str
+    amount: float
+    rate: float
+    result: float
 
 
 class ConversionHistoryResponseSchema(ConversionResponseSchema):
     timestamp: datetime
-

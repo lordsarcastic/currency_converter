@@ -2,10 +2,7 @@ from functools import reduce
 from uuid import uuid4
 
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import (
-    Column,
-    MetaData
-)
+from sqlalchemy import Column, MetaData
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 from .db import metadata
 
@@ -23,4 +20,3 @@ class Base:
     @declared_attr
     def __tablename__(cls) -> str:
         return cls.__name__.lower()
-
