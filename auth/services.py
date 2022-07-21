@@ -34,7 +34,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def create_auth_token(payload: Dict[str, Any], expiry: int) -> str:
-    expiry_delta = datetime.utcnow() + timedelta(seconds=expiry)
+    expiry_delta = datetime.now() + timedelta(seconds=expiry)
     data_to_encode = {"expiry": str(expiry_delta), "data": payload}
     encoded_data: str = jwt.encode(
         data_to_encode, settings.SECRET_KEY, settings.JWT_ALGORITHM
@@ -61,7 +61,7 @@ class UserService(BaseService):
         return result
 
     def login(self, credentials: LoginSchema) -> TokenSchema:
-        user_from_db: Optional[User] =self.db.query(User).filter(
+        user_from_db: Optional[User] = self.db.query(User).filter(
             User.email == credentials.email
         ).first()
 
@@ -93,9 +93,12 @@ class UserService(BaseService):
                 algorithms=[settings.JWT_ALGORITHM]
             )
             logging.info(payload)
-            token_data = AuthSchema(**payload)
+            token_data = AuthSchema(
+                expiry=datetime.fromisoformat(payload['expiry']),
+                data=payload['data']
+            )
 
-            if token_data.expiry > datetime.now():
+            if token_data.expiry < datetime.now():
                 raise exceptions.TokenExpired
         except (jwt.JWTError, ValidationError):
             raise exceptions.UnvalidatedCredentials
