@@ -1,2 +1,2 @@
 # currency-converter
-A FastAPI application for converting currencies
+A FastAPI application for converting currencies to other currencies
