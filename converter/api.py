@@ -30,7 +30,7 @@ router = APIRouter(prefix="/currencies")
     summary="Get list of currencies supported",
     response_model=CurrencyListSchema,
 )
-def get_currency_list(redis: Redis = Depends(redis)):
+async def get_currency_list(redis: Redis = Depends(redis)):
     currency_list = ConverterService.get_currency_list(redis)
     list_of_currencies = list()
 
@@ -45,7 +45,7 @@ def get_currency_list(redis: Redis = Depends(redis)):
     summary="Convert one currency to another",
     response_model=ConversionResponseSchema,
 )
-def convert_currency(
+async def convert_currency(
     body: ConvertSchema,
     db: Session = Depends(get_db),
     user: Optional[User] = Depends(get_user),
@@ -74,7 +74,7 @@ def convert_currency(
     summary="Get a history of your conversions",
     response_model=List[ConversionHistoryResponseSchema],
 )
-def get_history(
+async def get_history(
     from_currency: str = None,
     to_currency: str = None,
     db: Session = Depends(get_db),
