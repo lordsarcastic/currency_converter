@@ -57,6 +57,22 @@ If you insist on testing with Postman:
 ## Discussion
 This section contains justifications and improvements that should be made.
 
+### Compromises
+This application is supposed to be completed within four (4) hours; and while this solution is extensive, I will discuss tradeoffs I'd have made if I had to implement this in 4 hours.
+
+#### Structure
+The application structure would have been more primitive. The current structure is more domain-driven than anything, following Django's convention as inspiration which works pretty well. This means that lots of abstracted code such as base classes for database and pydantic schemas may have been left out or simply repeated. I would have had the entirety of the endpoints in a single file, database schemas together, same as services and utility functions.
+
+#### Containerization
+Perhaps, this is a "me"-thing, but in cases where there are a number of infrastructures needed to make the application work such as the use of Redis and Postgres, I would have focused more on making the application work within a container rather than ensure it had steps for working with it both inside and outside a container
+
+#### Tests and databases
+The use of a mock dependency for Postgres in the `conftest.temp_db` would have remained while a mocking of Redis would have been left out since using the same Redis instance would have only resulted in overwriting values rather than throwing contraint exceptions. I'd have also dropped the use of Redis altogether since the database could be used for caching which may be okay at least. The test cases currently are pretty important so I'd have left them in place.
+
+#### Services
+It is hard to say if I would have left out the separation of services because while it's the bulk of the application, its presence ensured I wrote functionalities which worked on first run! The focus of type hinting by FastAPI was a very handy feature in this case. So, services would have stayed except it would look uglier and everything would be in a single `services.Service` class.
+
+
 ### Choice of Database
 Postgres is used as a database to store information. Seeing that the two tables: `user` and `conversionhistory` are related, it makes sense to use a relational database like PostgreSQL.
 
