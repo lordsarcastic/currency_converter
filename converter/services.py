@@ -2,13 +2,13 @@ import json
 import logging
 from typing import Any, Dict, List, Optional
 from uuid import UUID
+from redis import Redis
 
 import requests
 from auth.models import User
 
 from backend.services import BaseService
 from backend.settings import settings
-from db.db import RedisClient
 
 from . import exceptions
 from .models import ConversionHistory
@@ -66,8 +66,8 @@ class ConverterService(BaseService):
         self.save(history_to_save)
 
     @classmethod
-    def cache_currency_list(cls):
-        if RedisClient.get(cls.CURRENCIES_REDIS_KEY):
+    def cache_currency_list(cls, redis_client: Redis):
+        if redis_client.get(cls.CURRENCIES_REDIS_KEY):
             return
 
         url = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.min.json"
@@ -79,35 +79,25 @@ class ConverterService(BaseService):
 
         jsonified_currencies = json.dumps(currencies)
         logging.info(jsonified_currencies)
-        RedisClient.setex(
+        redis_client.setex(
             cls.CURRENCIES_REDIS_KEY,
             settings.CURRENCY_CACHE_EXPIRY_TIME,
             jsonified_currencies,
         )
 
     @classmethod
-    def get_currency_list(cls) -> Dict[str, str]:
-        currencies: str = RedisClient.get(cls.CURRENCIES_REDIS_KEY)
-        print("We grab from cache")
+    def get_currency_list(cls, redis_client: Redis) -> Dict[str, str]:
+        currencies: str = redis_client.get(cls.CURRENCIES_REDIS_KEY)
+
         if not currencies:
-            print("We are grabbing from cached")
-            cls.cache_currency_list()
-            currencies = RedisClient.get(cls.CURRENCIES_REDIS_KEY)
+            cls.cache_currency_list(redis_client)
+            currencies = redis_client.get(cls.CURRENCIES_REDIS_KEY)
 
         return json.loads(currencies)
 
-        # list_of_currencies = list()
-
-        # for key, value in json.loads(currencies):
-        #     list_of_currencies.append(
-        #         CurrencySchema(code=key, name=value)
-        #     )
-
-        # return CurrencyListSchema(currencies=list_of_currencies)
-
     @classmethod
-    def currency_is_supported(cls, currency: str) -> bool:
-        currency_from_cache = cls.get_currency_list().get(currency)
+    def currency_is_supported(cls, currency: str, redis_client: Redis) -> bool:
+        currency_from_cache = cls.get_currency_list(redis_client).get(currency)
         return bool(currency_from_cache)
 
     @classmethod

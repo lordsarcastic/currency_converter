@@ -29,5 +29,12 @@ def get_db():
     finally:
         db.close()
 
-
-RedisClient = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
+def redis():
+    RedisClient = redis.Redis(
+        host=settings.REDIS_HOST,
+        port=settings.REDIS_PORT,
+        db=0
+    )
+    yield RedisClient
+    RedisClient.flushdb()
+    

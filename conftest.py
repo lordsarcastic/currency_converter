@@ -1,4 +1,5 @@
 import pytest
+from redis import Redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import (
@@ -8,7 +9,7 @@ from sqlalchemy_utils import (
 )
 
 from db.base import Base
-from db.db import get_db
+from db.db import get_db, redis
 from main import app
 
 from backend.settings import settings
@@ -43,11 +44,22 @@ def temp_db(f):
                 yield db
             finally:
                 db.close()
+        
+        def test_redis():
+            RedisClient = Redis(
+                host=settings.REDIS_HOST,
+                port=settings.REDIS_PORT,
+                db=1
+            )
+            yield RedisClient
+            RedisClient.flushdb()
 
         #get to use SessionLocal received from fixture_Force db change
         app.dependency_overrides[get_db] = override_get_db
+        app.dependency_overrides[redis] = test_redis
         # Run tests
         f(*args, **kwargs)
         # get_Undo db
         app.dependency_overrides[get_db] = get_db
     return func
+

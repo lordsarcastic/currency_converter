@@ -1,12 +1,13 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends
+from redis import Redis
 from sqlalchemy.orm import Session
 
 from auth.api import get_user
 from auth.exceptions import UnvalidatedCredentials
 from auth.models import User
 from auth.services import reuseable_oauth
-from db.db import get_db
+from db.db import get_db, redis
 
 from .exceptions import CurrencyNotSupported
 from .models import ConversionHistory
@@ -29,10 +30,9 @@ router = APIRouter(prefix="/currencies")
     summary="Get list of currencies supported",
     response_model=CurrencyListSchema,
 )
-def get_currency_list(token: str = Depends(reuseable_oauth)):
-    currency_list = ConverterService.get_currency_list()
+def get_currency_list(redis: Redis = Depends(redis)):
+    currency_list = ConverterService.get_currency_list(redis)
     list_of_currencies = list()
-    print("list of currencies", currency_list)
 
     for key, value in currency_list.items():
         list_of_currencies.append(CurrencySchema(code=key, name=value))
@@ -49,6 +49,7 @@ def convert_currency(
     body: ConvertSchema,
     db: Session = Depends(get_db),
     user: Optional[User] = Depends(get_user),
+    redis: Redis = Depends(redis)
 ):
     if not user:
         raise UnvalidatedCredentials
@@ -57,7 +58,7 @@ def convert_currency(
     body.to_currency = body.to_currency.lower()
 
     for currency in (body.from_currency, body.to_currency):
-        if not ConverterService.currency_is_supported(currency):
+        if not ConverterService.currency_is_supported(currency, redis):
             raise CurrencyNotSupported(currency)
 
     conversion_result = ConverterService.convert(body)
