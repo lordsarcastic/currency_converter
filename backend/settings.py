@@ -21,6 +21,10 @@ class Settings:
     DB_URL = (
         f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DB}"
     )
+    TEST_DB = get_env_with_context("TEST_DB", context="POSTGRES")
+    TEST_DB_URL = (
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{TEST_DB}"
+    )
     ACCESS_TOKEN_EXPIRY_TIME = 60 * 30
     REFRESH_TOKEN_EXPIRY_TIME = 60 * 24 * 7
     PASSWORD_HASHER = CryptContext(schemes=["bcrypt"], deprecated="auto")
