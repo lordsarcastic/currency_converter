@@ -12,7 +12,7 @@ class Settings:
     ALLOWED_HOST = environ.get("ALLOWED_HOST")
     SECRET_KEY = environ.get("SECRET_KEY")
     DEBUG = bool(environ.get("DEBUG"))
-    ALLOWED_PORT = 8000
+    ALLOWED_PORT = int(environ.get("PORT"))
     DB_USER = get_env_with_context("USER", context="POSTGRES")
     DB_PASSWORD = get_env_with_context("PASSWORD", context="POSTGRES")
     DB_DB = get_env_with_context("DB", context="POSTGRES")

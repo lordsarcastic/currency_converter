@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from auth.api import get_user
 from auth.exceptions import UnvalidatedCredentials
 from auth.models import User
-from db.db import get_db, redis
+from db.db import get_db, get_redis
 
 from .exceptions import CurrencyNotSupported
 from .models import ConversionHistory
@@ -29,7 +29,7 @@ router = APIRouter(prefix="/currencies")
     summary="Get list of currencies supported",
     response_model=CurrencyListSchema,
 )
-async def get_currency_list(redis: Redis = Depends(redis)):
+async def get_currency_list(redis: Redis = Depends(get_redis)):
     currency_list = ConverterService.get_currency_list(redis)
     list_of_currencies = list()
 
@@ -48,7 +48,7 @@ async def convert_currency(
     body: ConvertSchema,
     db: Session = Depends(get_db),
     user: Optional[User] = Depends(get_user),
-    redis: Redis = Depends(redis)
+    redis: Redis = Depends(get_redis)
 ):
     if not user:
         raise UnvalidatedCredentials

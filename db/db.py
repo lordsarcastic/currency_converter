@@ -32,7 +32,7 @@ def get_db():
     finally:
         db.close()
 
-def redis():
+def get_redis():
     """
     A dependecy for working with Redis for easy testing and overrides
     """

@@ -9,7 +9,7 @@ from sqlalchemy_utils import (
 )
 
 from db.base import Base
-from db.db import get_db, redis
+from db.db import get_db, get_redis
 from main import app
 
 from backend.settings import settings
@@ -56,7 +56,7 @@ def temp_db(f):
 
         #get to use SessionLocal received from fixture_Force db change
         app.dependency_overrides[get_db] = override_get_db
-        app.dependency_overrides[redis] = test_redis
+        app.dependency_overrides[get_redis] = test_redis
         # Run tests
         f(*args, **kwargs)
         # get_Undo db
