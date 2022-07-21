@@ -9,6 +9,9 @@ from .db import metadata
 
 @as_declarative()
 class Base:
+    """
+    Base class to handle table schema
+    """
     __name__: str
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)

@@ -6,6 +6,9 @@ from db.base import Base
 
 
 class BaseService:
+    """
+    Base class for services. Handles DB initialization and saving a model
+    """
     def __init__(self, db: Session) -> None:
         self.db = db
 

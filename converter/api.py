@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from auth.api import get_user
 from auth.exceptions import UnvalidatedCredentials
 from auth.models import User
-from auth.services import reuseable_oauth
 from db.db import get_db, redis
 
 from .exceptions import CurrencyNotSupported
@@ -54,6 +53,8 @@ async def convert_currency(
     if not user:
         raise UnvalidatedCredentials
 
+    # for consistency with what is in the cache and coming from the
+    # converter endpoint
     body.from_currency = body.from_currency.lower()
     body.to_currency = body.to_currency.lower()
 

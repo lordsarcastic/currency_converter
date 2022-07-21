@@ -7,6 +7,10 @@ from db.base import Base
 
 
 class User(Base):
+    """
+    Model for the User. Used for authentication and relationship with
+    the ConversionHistory table
+    """
     email = Column(String(255), unique=True, index=True, nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255))
@@ -15,6 +19,10 @@ class User(Base):
 
     @classmethod
     def to_dict(cls, instance: Type[Base]):
+        """
+        Additional functionality to convert a User instance into a dictionary
+        so it can be used as keyword arguments
+        """
         result = {}
 
         for column in instance.__table__.columns:

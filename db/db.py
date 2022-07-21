@@ -21,6 +21,9 @@ metadata.create_all(engine)
 
 
 def get_db():
+    """
+    A dependency for working with PostgreSQL
+    """
     try:
         db = LocalSession()
         yield db
@@ -30,6 +33,9 @@ def get_db():
         db.close()
 
 def redis():
+    """
+    A dependecy for working with Redis for easy testing and overrides
+    """
     RedisClient = redis.Redis(
         host=settings.REDIS_HOST,
         port=settings.REDIS_PORT,

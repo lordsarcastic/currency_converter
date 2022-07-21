@@ -13,7 +13,7 @@ from . import exceptions
 from .models import User
 from .schema import AuthSchema, LoginSchema, SignupSchema, TokenSchema, UserSchema
 
-
+# for authentication that works seamlessly with OpenAPI
 reuseable_oauth = OAuth2PasswordBearer(
     tokenUrl="/api/v1/user/login",
     scheme_name="JWT"
@@ -21,11 +21,13 @@ reuseable_oauth = OAuth2PasswordBearer(
 
 
 def hash_password(password: str) -> str:
+    """Creates a hash of the password"""
     hashed_password = settings.PASSWORD_HASHER.hash(password)
     return hashed_password
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Checks if a password corresponds to a hash"""
     password_is_verified = settings.PASSWORD_HASHER.verify(
         plain_password, hashed_password
     )
@@ -34,6 +36,11 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def create_auth_token(payload: Dict[str, Any], expiry: int) -> str:
+    """
+    This handles the encoding of user information into a token
+    that can be used. It is generic so as to accomodate access and
+    refresh token.
+    """
     expiry_delta = datetime.now() + timedelta(seconds=expiry)
     data_to_encode = {"expiry": str(expiry_delta), "data": payload}
     encoded_data: str = jwt.encode(
@@ -44,7 +51,13 @@ def create_auth_token(payload: Dict[str, Any], expiry: int) -> str:
 
 
 class UserService(BaseService):
+    """
+    Core functionality for user-related tasks.
+    """
     def create_user(self, user: SignupSchema) -> User:
+        """
+        Creates a user from signup details
+        """
         user_from_db = self.db.query(User).filter(
             User.email == user.email
         ).first()
@@ -54,13 +67,15 @@ class UserService(BaseService):
 
         user.password = hash_password(user.password)
         user_to_save = User(**user.to_dict())
-        self.db.add(user_to_save)
-        self.db.commit()
-        self.db.refresh(user_to_save)
+        self.save(user_to_save)
         result = UserSchema(**User.to_dict(user_to_save))
         return result
 
     def login(self, credentials: LoginSchema) -> TokenSchema:
+        """
+        Confirms a user and grants an access and refresh token if
+        credentials are valid.
+        """
         user_from_db: Optional[User] = self.db.query(User).filter(
             User.email == credentials.email
         ).first()
@@ -72,6 +87,8 @@ class UserService(BaseService):
             raise exceptions.InvalidCredentials
 
         user = User.to_dict(user_from_db)
+        # we don'w want the password hash to be visible in
+        # the token information
         user.pop("password")
         token = TokenSchema(
             access_token=create_auth_token(
@@ -86,6 +103,9 @@ class UserService(BaseService):
         return token
 
     def get_current_user(self, token: str) -> User:
+        """
+        Returns a user from a token
+        """
         try:
             payload = jwt.decode(
                 token,
@@ -98,6 +118,7 @@ class UserService(BaseService):
                 data=payload['data']
             )
 
+            # if the expiry date is in the pas
             if token_data.expiry < datetime.now():
                 raise exceptions.TokenExpired
         except (jwt.JWTError, ValidationError):

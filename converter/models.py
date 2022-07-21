@@ -24,6 +24,10 @@ class ConversionHistory(Base):
 
     @classmethod
     def to_dict(cls, instance: Type[Base]):
+        """
+        Additional functionality to convert a User instance into a dictionary
+        so it can be used as keyword arguments
+        """
         result = {}
 
         for column in instance.__table__.columns:

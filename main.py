@@ -24,6 +24,9 @@ async def shutdown():
 
 
 if __name__ == "__main__":
+    """
+    Server configurations
+    """
     BackendConfig = uvicorn.Config(
         app="main:app",
         host=settings.ALLOWED_HOST,

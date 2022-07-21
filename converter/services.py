@@ -15,8 +15,6 @@ from .models import ConversionHistory
 from .schema import (
     ConversionResponseSchema,
     ConvertSchema,
-    CurrencyListSchema,
-    CurrencySchema,
     GetHistorySchema,
     HistorySchema,
 )
@@ -40,6 +38,9 @@ def make_request(url, **kwargs) -> Dict[str, Any]:
 
 
 def make_request_with_retries(urls, **kwargs) -> Dict[str, Any]:
+    """
+    Makes request to each url in urls untl one works.
+    """
     response = None
 
     for url in urls:
@@ -53,6 +54,9 @@ def make_request_with_retries(urls, **kwargs) -> Dict[str, Any]:
 
 
 def craft_conversion_urls(_from, to):
+    """
+    Creates API endpoints to be called to convert a currency
+    """
     urls = list(map(lambda url: url.format(_from, to), CONVERSION_APIS))
 
     return urls
@@ -62,11 +66,18 @@ class ConverterService(BaseService):
     CURRENCIES_REDIS_KEY = "currencies"
 
     def add_history(self, history: HistorySchema) -> None:
+        """
+        Add a conversion to record
+        """
         history_to_save = ConversionHistory(**history.to_dict())
         self.save(history_to_save)
 
     @classmethod
     def cache_currency_list(cls, redis_client: Redis):
+        """
+        Request for supported currencies and
+        cache it for future replies for that day
+        """
         if redis_client.get(cls.CURRENCIES_REDIS_KEY):
             return
 
@@ -90,6 +101,7 @@ class ConverterService(BaseService):
         currencies: str = redis_client.get(cls.CURRENCIES_REDIS_KEY)
 
         if not currencies:
+            # fill up the cache again if it got removed.
             cls.cache_currency_list(redis_client)
             currencies = redis_client.get(cls.CURRENCIES_REDIS_KEY)
 
@@ -97,11 +109,17 @@ class ConverterService(BaseService):
 
     @classmethod
     def currency_is_supported(cls, currency: str, redis_client: Redis) -> bool:
+        """
+        Checks if a currency is supported by the API
+        """
         currency_from_cache = cls.get_currency_list(redis_client).get(currency)
         return bool(currency_from_cache)
 
     @classmethod
     def convert(cls, payload: ConvertSchema) -> ConversionResponseSchema:
+        """
+        Converts money from one currency to another
+        """
         conversion_urls = craft_conversion_urls(
             payload.from_currency, payload.to_currency
         )
@@ -122,6 +140,9 @@ class ConverterService(BaseService):
     def get_conversion_history(
         self, payload: GetHistorySchema, user: User
     ) -> List[ConversionHistory]:
+        """
+        Get history of conversions for a paticular
+        """
         histories = self.db.query(ConversionHistory).filter(
             ConversionHistory.user == user
         )

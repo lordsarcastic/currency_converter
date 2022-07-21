@@ -13,6 +13,9 @@ class HistorySchema(BaseSchema):
 
 
 class GetHistorySchema(BaseSchema):
+    """
+    Request body for parsing calls to get history
+    """
     from_currency: Optional[str]
     to_currency: Optional[str]
 
@@ -27,12 +30,18 @@ class CurrencyListSchema(BaseSchema):
 
 
 class ConvertSchema(BaseSchema):
+    """
+    Parses body for requests to convert currencies
+    """
     from_currency: str
     to_currency: str
     amount: float = Field(gt=0, description="The amount must be greater than zero")
 
 
 class ConversionResponseSchema(BaseSchema):
+    """
+    Schema for results of conversions
+    """
     from_currency: str
     to_currency: str
     amount: float
