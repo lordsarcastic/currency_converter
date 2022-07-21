@@ -46,6 +46,10 @@ The application is made up of 6 endpoints in total handling authentication and c
 Documentation for the application is found in `/docs` route where it is in OpenAPI format and you can also test it there.
 
 ## Testing 🚨
+Automated tests have been written and you can run tests with manual setup using pytest like so:
+`pytest .`
+You can run the tests on Docker with `docker-compose run web pytest`.
+
 If you insist on testing with Postman:
 - Install [Postman](https://www.getpostman.com/) or any preferred REST API Client such as [Insomnia](https://insomnia.rest/), [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), etc.
 - Get the application up and running by following the instructions in the Installation Guide of this README.
