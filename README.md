@@ -23,7 +23,7 @@ Running this service locally requires you to install Python, PostgreSQL and Redi
     - Install [Pipenv](https://pipenv.pypa.io/en/latest/)  which is used to manage the virtual environment using `pip3 install pipenv`.
     - Ensure Git is installed, then clone this repository by running `git clone git@github.com:Lord-sarcastic/currency_converter.git` in the terminal.
     - Enter the directory with `cd `
-    - Create a `.env` file using the [.env.example](/.env.example) file as a template. Ensure to fill in appropriate values. The `DJANGO_ALLOWED_HOSTS` variable refers to the domain host you'll be running this app on.
+    - Create a `.env` file using the [.env.example](/.env.example) file as a template. Ensure to fill in appropriate values.
     - Run `pipenv install` to install all necessary dependencies for the server application in a virtual environment.
     - Run `pipenv shell` to activate the virtual environment.
     - With Postgres installed, login to the Postgres terminal with `sudo -u user psql`
