@@ -86,3 +86,6 @@ I choose Redis for the purpose of caching requests. Since the supported currenci
 
 ## Credits 🙏
 - Blog posts that helped me get started with FastAPI as this is my first time working with FastAPI
+
+## To do
+Add a UI from [Dribble](https://dribbble.com/shots/15090067-Cryptocurrency-Trading-Platform)
