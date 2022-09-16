@@ -89,4 +89,5 @@ I choose Redis for the purpose of caching requests. Since the supported currenci
 
 ## To do
 [Auth UI](https://dribbble.com/shots/16753965-Login-Sign-up-Dark-Mode-AW-Universal-Page) from Dribble.
+
 Add a UI for the application from [Dribble](https://dribbble.com/shots/15090067-Cryptocurrency-Trading-Platform/attachments/6821162?mode=mediam)
