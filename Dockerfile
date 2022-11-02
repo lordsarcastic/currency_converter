@@ -18,7 +18,7 @@ RUN apk update \
 COPY . .
 
 RUN pip install pipenv
-RUN pipenv install --system
+RUN pipenv install --system --deploy --ignore-pipfile
 
 # sasori in Naruto is our default user
 RUN adduser -D sasori
