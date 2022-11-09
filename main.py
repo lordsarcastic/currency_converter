@@ -23,7 +23,7 @@ async def shutdown():
     await db.disconnect()
 
 
-if __name__ == "__main__":
+def run():
     """
     Server configurations
     """
@@ -37,4 +37,4 @@ if __name__ == "__main__":
         use_colors=True,
     )
     server = uvicorn.Server(BackendConfig)
-    server.run()
+    return server

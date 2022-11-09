@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: .
-    command: python main.py
+    command: sh -c "alembic upgrade head && gunicorn --bind :8000 --workers 1 --worker-class uvicorn.workers.UvicornWorker --factory --threads 8 app.main:run"
     volumes:
       - ./:/usr/src/app/
     ports:

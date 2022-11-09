@@ -15,6 +15,7 @@ python-multipart = "*"
 redis = "*"
 pytest = "*"
 sqlalchemy-utils = "*"
+gunicorn = "*"
 
 [dev-packages]
 black = "*"

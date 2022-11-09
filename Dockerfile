@@ -19,7 +19,3 @@ COPY . .
 
 RUN pip install pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
-
-# sasori in Naruto is our default user
-RUN adduser -D sasori
-USER sasori
