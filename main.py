@@ -21,20 +21,3 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await db.disconnect()
-
-
-def run():
-    """
-    Server configurations
-    """
-    BackendConfig = uvicorn.Config(
-        app="main:app",
-        host=settings.ALLOWED_HOST,
-        debug=settings.DEBUG,
-        port=settings.ALLOWED_PORT,
-        reload=True,
-        log_level=logging.INFO,
-        use_colors=True,
-    )
-    server = uvicorn.Server(BackendConfig)
-    return server

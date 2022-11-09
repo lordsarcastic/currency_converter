@@ -9,10 +9,7 @@ def get_env_with_context(value: str, default=None, context="API") -> str:
 
 class Settings:
     APP_TITLE = "Currency Converter API"
-    ALLOWED_HOST = environ.get("ALLOWED_HOST")
     SECRET_KEY = environ.get("SECRET_KEY")
-    DEBUG = bool(environ.get("DEBUG"))
-    ALLOWED_PORT = int(environ.get("PORT"))
     DB_USER = get_env_with_context("USER", context="POSTGRES")
     DB_PASSWORD = get_env_with_context("PASSWORD", context="POSTGRES")
     DB_DB = get_env_with_context("DB", context="POSTGRES")

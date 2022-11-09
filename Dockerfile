@@ -2,7 +2,7 @@
 FROM python:3.8-alpine3.13
 
 # set work directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -14,8 +14,11 @@ RUN apk update \
     && apk add build-base libffi-dev openssl-dev \
     && apk add postgresql-dev
 
-# copy entire project directory
-COPY . .
+COPY Pipfile .
+COPY Pipfile.lock .
 
 RUN pip install pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
+
+# copy entire project directory
+COPY . .
