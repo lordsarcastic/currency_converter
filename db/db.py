@@ -36,11 +36,7 @@ def get_redis():
     """
     A dependecy for working with Redis for easy testing and overrides
     """
-    RedisClient = redis.Redis(
-        host=settings.REDIS_HOST,
-        port=settings.REDIS_PORT,
-        db=0
-    )
+    RedisClient = redis.Redis.from_url(settings.REDIS_URL, db=0)
     yield RedisClient
     RedisClient.flushdb()
     

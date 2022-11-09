@@ -28,8 +28,7 @@ class Settings:
     REFRESH_TOKEN_EXPIRY_TIME = 60 * 24 * 7
     PASSWORD_HASHER = CryptContext(schemes=["bcrypt"], deprecated="auto")
     JWT_ALGORITHM = "HS256"
-    REDIS_HOST = get_env_with_context("HOST", default="localhost", context="REDIS")
-    REDIS_PORT = get_env_with_context("PORT", default="6379", context="REDIS")
+    REDIS_URL = environ.get("REDIS_URL")
     CURRENCY_CACHE_EXPIRY_TIME = 60 * 60 * 24
     PAGE_SIZE = 50
 
