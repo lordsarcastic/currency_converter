@@ -19,7 +19,7 @@ class Settings:
         "DATABASE_URL",
         f"postgresql+psycopg2://"
         f"{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DB}",
-    )
+    ).replace("postgres://", "postgresql://")
     TEST_DB = get_env_with_context("TEST_DB", context="POSTGRES")
     TEST_DB_URL = (
         f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{TEST_DB}"
