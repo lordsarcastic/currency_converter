@@ -31,6 +31,7 @@ class Settings:
     REDIS_URL = environ.get("REDIS_URL")
     CURRENCY_CACHE_EXPIRY_TIME = 60 * 60 * 24
     PAGE_SIZE = 50
+    ALLOWED_CLIENTS = environ.get("ALLOWED_CLIENTS").split()
 
 
 settings = Settings()
