@@ -16,14 +16,16 @@ app.include_router(router, prefix="/api/v1")
 
 app.add_middleware(
     CORSMiddleware,
-    origins=settings.ALLOWED_CLIENTS,
+    allow_origins=settings.ALLOWED_CLIENTS,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 @app.get("/")
 async def home():
+    print(settings.ALLOWED_CLIENTS)
+    logging.info(settings.ALLOWED_CLIENTS)
     res = RedirectResponse(url="/redoc")
     return res
 
@@ -36,3 +38,18 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await db.disconnect()
+
+
+# if __name__ == "__main__":
+#     """
+#     Server configurations
+#     """
+#     uvicorn.run(
+#         app="main:app",
+#         host=settings.ALLOWED_HOST,
+#         debug=settings.DEBUG,
+#         port=settings.ALLOWED_PORT,
+#         reload=True,
+#         log_level=logging.INFO,
+#         use_colors=True,
+#     )
